@@ -1,0 +1,8 @@
+requests 
+beautifulsoup4 
+supabase 
+pydantic 
+langchain_openai 
+langchain_core
+educhain
+python-dotenv

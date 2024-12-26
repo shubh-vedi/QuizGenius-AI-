@@ -1,6 +1,6 @@
 # QuizGenius AI 🤖
 
-QuizGenius AI is an intelligent quiz generation system that automatically creates high-quality multiple-choice questions from AI-related news or custom content. Built with GPT-4 and Streamlit, it helps create engaging quizzes while staying current with AI developments.
+QuizGenius AI is an intelligent quiz generation system that automatically creates high-quality multiple-choice questions from AI-related news or custom content. Built with GPT-4o and Streamlit, it helps create engaging quizzes while staying current with AI developments.
 
 ## 🌟 Features
 
@@ -85,8 +85,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 🔗 Contact
 
-- GitHub: [Your GitHub Username]
-- Email: [Your Email]
+- GitHub: shubh-vedi
+- Email: shubhamnv2@gmail.com
 
 ## 🙏 Acknowledgments
 

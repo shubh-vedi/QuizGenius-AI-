@@ -85,7 +85,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 🔗 Contact
 
-- GitHub: shubh-vedi
+- GitHub: [shubh-vedi](https://github.com/shubh-vedi)
 - Email: shubhamnv2@gmail.com
 
 ## 🙏 Acknowledgments

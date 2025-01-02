@@ -161,7 +161,7 @@ def generate_quiz(content: str, num_questions: int, openai_api_key: str) -> Quiz
             - Responses should be returned in JSON format.
 
             Please ensure the variety and elaboration make the questions engaging and informative."
-            {format_instructions}""",
+            {format_instructions}"""),
             input_variables=["content", "num_questions"],
         )
         chain = prompt | llm | PydanticOutputParser(pydantic_object=QuizQuestionList)

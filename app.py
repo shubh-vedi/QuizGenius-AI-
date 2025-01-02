@@ -104,8 +104,7 @@ def generate_quiz(content: str, num_questions: int, openai_api_key: str) -> Quiz
     try:
         llm = ChatOpenAI(model="gpt-4o", temperature=0.7, openai_api_key=openai_api_key)
        prompt = PromptTemplate(
-            template=
-            """"Generate {num_questions} context-based multiple-choice quiz questions from the following news content:\n\n{content}\n\n"
+            template=(""""Generate {num_questions} context-based multiple-choice quiz questions from the following news content:\n\n{content}\n\n"
 
             Guidelines:
 

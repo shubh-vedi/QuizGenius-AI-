@@ -103,25 +103,66 @@ def push_to_db(questions: QuizQuestionList, supabase_url, supabase_key, content_
 def generate_quiz(content: str, num_questions: int, openai_api_key: str) -> QuizQuestionList:
     try:
         llm = ChatOpenAI(model="gpt-4o", temperature=0.7, openai_api_key=openai_api_key)
-        prompt = PromptTemplate(
-            template=("""
-                Generate {num_questions} context-based multiple-choice quiz questions from the following news content:
-                {content}
+       prompt = PromptTemplate(
+            template=
+            """"Generate {num_questions} context-based multiple-choice quiz questions from the following news content:\n\n{content}\n\n"
 
-                Guidelines:
-                1. Questions must reference details from the news to make them engaging.
-                2. Provide four distinct answer options (one correct).
-                3. Include a "news_context" summarizing the news item.
-                4. Ensure variety and relevance in the questions.
-                
-                Format the output as a JSON object with a 'questions' array containing objects with:
-                - question (string)
-                - options (array of objects with 'text' and 'correct' fields, where 'correct' is a boolean true/false)
-                - news_context (string)
-                - tags (array of strings)
-                - metadata (object)
-            """),
-            input_variables=["content", "num_questions"]
+            Guidelines:
+
+            1. Question Structure:
+                Each question must include a brief context or background related to the news item.
+                Ensure the question text references specific details from the news to make it engaging and informative.
+
+            Example 1:
+                Title: Nobel laureates urge strong AI regulation
+                Description: Physics Nobel Prize winner Geoffrey Hinton and chemistry laureate Demis Hassabis on Saturday insisted on a need for strong regulation of artificial intelligence, which played a key role in their awards. Hinton, who made headlines when he quit Google last year and warned of the dangers machines could one day outsmart people, was awarded his Nobel along with American John Hopfield for work on artificial neural networks.
+
+                Question:
+                Nobel laureates Geoffrey Hinton and Demis Hassabis emphasize strong AI regulation. Geoffrey Hinton, who warned about AI surpassing human intelligence, was awarded the Nobel Prize for his work on which AI-related technology?
+
+            Example 2:
+                Title: Advanced AI chips cleared for export to UAE under Microsoft deal
+                Description: The US government has authorised the export of advanced artificial intelligence chips to a Microsoft-operated facility in the United Arab Emirates. This approval is part of Microsoft's closely scrutinized partnership with the Emirati AI company G42.
+
+                Question:
+                The US has approved the export of advanced AI chips to a Microsoft-operated facility in the UAE. This deal is part of a collaboration with which Emirati AI company?
+
+            Example 3:
+                Title: Banks to use AI & machine learning to safeguard customers from financial frauds
+                Description: In a significant move to address the growing menace of digital financial frauds, the Department of Financial Services (DFS) has directed banks to adopt advanced technologies, including artificial intelligence (AI) and machine learning (ML), to safeguard customers from fraudsters.
+
+                Question:
+                The Department of Financial Services (DFS) recently instructed banks to use AI and machine learning technologies to combat which pressing issue in the financial sector?
+
+            --- This is the question forming methodoligy you need to follow
+
+            2. Answer Options:
+                Provide four distinct multiple-choice options, including only one correct answer.
+                Ensure the incorrect options are plausible but clearly distinguishable from the correct answer.
+
+                Example Options:
+
+                Options:
+                - Advanced robotics
+                - Artificial neural networks
+                - Quantum computing
+                - Machine learning frameworks
+
+            3. Correct Answer:
+                Clearly identify the correct answer in the response.
+
+            4. News Context:
+                Include a short "news_context" for each question, summarizing the relevant news item.
+
+            5. Variety:
+                Focus on unique aspects of the content to ensure a variety of topics and perspectives in the questions.
+
+            - Questions should be elaborative, incorporating relevant background or situational details from the news to enhance understanding.
+            - Responses should be returned in JSON format.
+
+            Please ensure the variety and elaboration make the questions engaging and informative."
+            {format_instructions}""",
+            input_variables=["content", "num_questions"],
         )
         chain = prompt | llm | PydanticOutputParser(pydantic_object=QuizQuestionList)
         return chain.invoke({"content": content, "num_questions": num_questions})

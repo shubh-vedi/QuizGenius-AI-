@@ -10,7 +10,6 @@ from supabase import create_client, Client
 import requests
 from bs4 import BeautifulSoup
 import pickle
-from google.colab import userdata
 
 # Define the models for Quiz
 class Option(BaseModel):
@@ -26,6 +25,11 @@ class QuizQuestion(BaseModel):
 
 class QuizQuestionList(BaseModel):
     questions: List[QuizQuestion]
+
+# Load environment variables
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+SUPABASE_URL = os.getenv('SUPABASE_BFWAI_URL')
+SUPABASE_KEY = os.getenv('SUPABASE_BFWAI_KEY')
 
 # News scraping function
 def scrape_news():
@@ -55,9 +59,11 @@ def shuffle_options(mcq_list):
 
 # Insert quiz questions into Supabase
 def push_to_db(questions: QuizQuestionList, content_source):
-    supabase_url = userdata.get('SUPABASE_BFWAI_URL')
-    supabase_key = userdata.get('SUPABASE_BFWAI_KEY')
-    client: Client = create_client(supabase_url, supabase_key)
+    if not all([SUPABASE_URL, SUPABASE_KEY]):
+        st.error("Supabase credentials not found in environment variables!")
+        return
+    
+    client: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
     shuffled_questions = shuffle_options(questions.questions)
     for question in shuffled_questions:
         question.metadata = {"source": content_source}
@@ -69,10 +75,12 @@ def push_to_db(questions: QuizQuestionList, content_source):
 
 # Generate quiz questions
 def generate_quiz(content: str, num_questions: int) -> QuizQuestionList:
+    if not OPENAI_API_KEY:
+        st.error("OpenAI API key not found in environment variables!")
+        return QuizQuestionList(questions=[])
+    
     try:
-        openai_api_key = userdata.get('OPENAI_API_KEY')
-        os.environ['OPENAI_API_KEY'] = openai_api_key
-        llm = ChatOpenAI(model="gpt-4", temperature=0.7, openai_api_key=openai_api_key)
+        llm = ChatOpenAI(model="gpt-4", temperature=0.7, openai_api_key=OPENAI_API_KEY)
         prompt = PromptTemplate(
             template=
             """"Generate {num_questions} context-based multiple-choice quiz questions from the following news content:\n\n{content}\n\n"

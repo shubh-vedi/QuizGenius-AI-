@@ -120,7 +120,7 @@ def generate_quiz(content: str, num_questions: int, openai_api_key: str) -> Quiz
         
     try:
         llm = ChatOpenAI(
-            model="gpt-4",
+            model="gpt-4o",
             temperature=0.7,
             api_key=openai_api_key
         )
@@ -267,6 +267,7 @@ def main():
                     questions = generate_quiz(custom_text, num_questions, openai_api_key)
                     if questions and questions.questions:
                         st.success(f"Generated {len(questions.questions)} questions!")
+                        print(questions.questions)
                         for q in questions.questions:
                             st.write(q.dict())
                         save_questions(questions)
